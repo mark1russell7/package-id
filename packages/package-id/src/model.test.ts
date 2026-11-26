@@ -19,12 +19,14 @@ describe("the model numbers of CSAF", () => {
   });
 
   it("reads a backslash before a wildcard as a literal character", () => {
-    expect(modelNumberMatches("AB\*1", "AB*1")).toBe(true);
-    expect(modelNumberMatches("AB\*1", "ABC1")).toBe(false);
-    expect(modelNumberMatches("AB\?", "AB?")).toBe(true);
+    expect(modelNumberMatches("AB\\*1", "AB*1")).toBe(true);
+    expect(modelNumberMatches("AB\\*1", "ABC1")).toBe(false);
+    expect(modelNumberMatches("AB\\?", "AB?")).toBe(true);
+    expect(modelNumberMatches("AB\\?", "ABC")).toBe(false);
     expect(modelNumberMatches("AB\\\\", "AB\\")).toBe(true);
     expect(modelNumberMatches("AB\\", "AB\\")).toBe(true);
-    expect(modelNumberMatches("A\B", "A\B")).toBe(true);
+    expect(modelNumberMatches("A\\B", "A\\B")).toBe(true);
+    expect(modelNumberMatches("A\\B", "AB")).toBe(false);
   });
 
   it("matches nothing with an empty pattern, and reads each code point as one character", () => {
