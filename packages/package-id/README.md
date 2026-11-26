@@ -37,6 +37,7 @@ versContains(parseVers("vers:npm/>=1.0.0|<1.2.3")!, "1.1.0");
 | `OSV_PURL_TYPES` | The purl type of each OSV ecosystem that has one. |
 | `compareVersions(scheme, a, b)` | Below 0, 0 or above 0 for the order of two versions, or `undefined` for a text that is not a version. |
 | `compareSemver`, `compareGo`, `comparePep440`, `compareDebian`, `compareRpm` | The order of one scheme: SemVer 2.0.0, Go modules, PEP 440, dpkg and `rpmvercmp`. |
+| `compareIntdot`, `compareGeneric` | The order of the `vers` schemes `intdot` (integers with dots) and `generic` (the versions of vendors, for example `V6.80`). |
 | `versionScheme(type)` | The version scheme of a purl type, or `undefined` when the order of the type is not known. |
 | `parseVers(text)` | The scheme and the constraints of a `vers` range, or `undefined` for a text that is not a range. |
 | `formatVers(vers)` | The `vers` text of a range, with the constraints in the order of their versions. |
@@ -54,7 +55,7 @@ versContains(parseVers("vers:npm/>=1.0.0|<1.2.3")!, "1.1.0");
 
 ## An unknown order
 
-A comparison does not guess. A version that is not a version of its scheme gives `undefined`. A scheme with no known order also gives `undefined`, for example Maven. Thus a caller that matches advisories to installed versions does not take an unknown result as a match or as no match.
+A comparison does not guess. A version that is not a version of its scheme gives `undefined`. A scheme with no known order also gives `undefined`, for example Maven. The `generic` order also gives `undefined` for two different runs of letters, for example `2.9.1.0_FR` and `2.9.1.0_ESP`. Thus a caller that matches advisories to installed versions does not take an unknown result as a match or as no match.
 
 ## License
 

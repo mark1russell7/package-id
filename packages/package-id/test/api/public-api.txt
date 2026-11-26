@@ -15,7 +15,9 @@ type VersComparator: build/index.d.ts#VersComparator
 type VersConstraint: build/index.d.ts#VersConstraint
 type VersionScheme: build/index.d.ts#VersionScheme
 compareDebian: build/index.d.ts#compareDebian
+compareGeneric: build/index.d.ts#compareGeneric
 compareGo: build/index.d.ts#compareGo
+compareIntdot: build/index.d.ts#compareIntdot
 comparePep440: build/index.d.ts#comparePep440
 compareRpm: build/index.d.ts#compareRpm
 compareSemver: build/index.d.ts#compareSemver
@@ -79,13 +81,19 @@ interface VersConstraint {
 }
 
 ### build/index.d.ts#VersionScheme
-type VersionScheme = "semver" | "golang" | "pypi" | "deb" | "rpm";
+type VersionScheme = "semver" | "golang" | "pypi" | "deb" | "rpm" | "intdot" | "generic";
 
 ### build/index.d.ts#compareDebian
 export declare function compareDebian(a: string, b: string): number | undefined;
 
+### build/index.d.ts#compareGeneric
+export declare function compareGeneric(a: string, b: string): number | undefined;
+
 ### build/index.d.ts#compareGo
 export declare function compareGo(a: string, b: string): number | undefined;
+
+### build/index.d.ts#compareIntdot
+export declare function compareIntdot(a: string, b: string): number | undefined;
 
 ### build/index.d.ts#comparePep440
 export declare function comparePep440(a: string, b: string): number | undefined;

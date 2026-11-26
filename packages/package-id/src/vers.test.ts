@@ -48,6 +48,17 @@ describe("the format of a range", () => {
 });
 
 describe("a version in a range", () => {
+  it("follows the generic ranges of the CSAF advisories of vendors", () => {
+    const vers = range("vers:generic/<=2.9.1.0_FR");
+    expect(versContains(vers, "2.9.1.0_FR")).toBe(true);
+    expect(versContains(vers, "2.8.5.0301_ESP")).toBe(true);
+    expect(versContains(vers, "2.9.12.0101_FR")).toBe(false);
+    expect(versContains(vers, "2.9.1.0_ESP")).toBeUndefined();
+    expect(versContains(range("vers:generic/<6.0|>=6.2|<6.4"), "6.3")).toBe(true);
+    expect(versContains(range("vers:all/*"), "anything")).toBe(true);
+    expect(versContains(range("vers:intdot/<4.6"), "4.10")).toBe(false);
+  });
+
   it("follows a range with a lower and an upper end", () => {
     const vers = range("vers:npm/>=1.0.0|<1.2.3");
     expect(versContains(vers, "1.0.0")).toBe(true);

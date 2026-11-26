@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { compareDebian, compareGo, comparePep440, compareRpm, compareSemver, compareVersions, versionScheme } from "./version.ts";
+import { compareDebian, compareGeneric, compareGo, compareIntdot, comparePep440, compareRpm, compareSemver, compareVersions, versionScheme } from "./version.ts";
 
 /** This function tells that each version of a list comes before the next one, and that each version equals itself. */
 function ascending(compare: (a: string, b: string) => number | undefined, versions: readonly string[]): void {
@@ -137,6 +137,40 @@ describe("the order of RPM", () => {
   });
 });
 
+describe("the order of intdot", () => {
+  it("compares the integers from left to right, with 0 for a missing integer", () => {
+    ascending(compareIntdot, ["0.9", "1.0", "1.0.1", "1.2", "1.10", "10.0"]);
+    expect(compareIntdot("1.0", "1.0.0")).toBe(0);
+    expect(compareIntdot("01.2", "1.2")).toBe(0);
+  });
+
+  it("gives undefined for a text that is not integers with dots", () => {
+    expect(compareIntdot("1.0a", "1.0")).toBeUndefined();
+    expect(compareIntdot("1..0", "1.0")).toBeUndefined();
+    expect(compareIntdot("", "1")).toBeUndefined();
+  });
+});
+
+describe("the order of generic", () => {
+  it("compares the versions of vendors by their runs of digits", () => {
+    ascending(compareGeneric, ["V5.4.0", "5.6.0", "5.6.2", "V6.8", "V6.80", "6.80.1", "2026.1"]);
+    ascending(compareGeneric, ["2.8.5.0301_ESP", "2.9.1.0_FR", "2.9.12.0101_FR"]);
+    expect(compareGeneric("V6.80", "6.80")).toBe(0);
+    expect(compareGeneric("1.0", "1.0.0")).toBe(0);
+    expect(compareGeneric("3.2.0.7", "3.2.0.9")).toBe(-1);
+    expect(compareGeneric("V9.0 SP1", "v9.0 sp1")).toBe(0);
+  });
+
+  it("gives undefined for a pair with no known order", () => {
+    expect(compareGeneric("2.9.1.0_FR", "2.9.1.0_ESP")).toBeUndefined();
+    expect(compareGeneric("1.0", "1.0 SP1")).toBeUndefined();
+    expect(compareGeneric("1.0", "1.0-beta")).toBeUndefined();
+    expect(compareGeneric("1.0a", "1.0.1")).toBeUndefined();
+    expect(compareGeneric("all", "1.0")).toBeUndefined();
+    expect(compareGeneric("", "1.0")).toBeUndefined();
+  });
+});
+
 describe("the scheme of a purl type", () => {
   it("gives the scheme of each known type, and undefined for the others", () => {
     expect(versionScheme("npm")).toBe("semver");
@@ -146,5 +180,8 @@ describe("the scheme of a purl type", () => {
     expect(versionScheme("constructor")).toBeUndefined();
     expect(compareVersions("maven", "1", "2")).toBeUndefined();
     expect(compareVersions("npm", "1.0.0", "1.0.1")).toBe(-1);
+    expect(versionScheme("generic")).toBe("generic");
+    expect(compareVersions("generic", "V6.80", "V6.9")).toBe(1);
+    expect(compareVersions("intdot", "1.2", "1.10")).toBe(-1);
   });
 });
