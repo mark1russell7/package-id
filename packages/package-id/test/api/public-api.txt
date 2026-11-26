@@ -7,18 +7,49 @@
 ## . (build/index.d.ts): names
 
 OSV_PURL_TYPES: build/index.d.ts#OSV_PURL_TYPES
+type OsvEvent: build/index.d.ts#OsvEvent
+type OsvRange: build/index.d.ts#OsvRange
 type Purl: build/index.d.ts#Purl
+type Vers: build/index.d.ts#Vers
+type VersComparator: build/index.d.ts#VersComparator
+type VersConstraint: build/index.d.ts#VersConstraint
+type VersionScheme: build/index.d.ts#VersionScheme
+compareDebian: build/index.d.ts#compareDebian
+compareGo: build/index.d.ts#compareGo
+comparePep440: build/index.d.ts#comparePep440
+compareRpm: build/index.d.ts#compareRpm
+compareSemver: build/index.d.ts#compareSemver
+compareVersions: build/index.d.ts#compareVersions
 formatPurl: build/index.d.ts#formatPurl
+formatVers: build/index.d.ts#formatVers
 normalizePurl: build/index.d.ts#normalizePurl
 osvPackagePurl: build/index.d.ts#osvPackagePurl
 osvPurl: build/index.d.ts#osvPurl
+osvRangeVers: build/index.d.ts#osvRangeVers
 packagePurlOf: build/index.d.ts#packagePurlOf
 parsePurl: build/index.d.ts#parsePurl
+parseVers: build/index.d.ts#parseVers
+versContains: build/index.d.ts#versContains
+versionScheme: build/index.d.ts#versionScheme
 
 ## Declarations
 
 ### build/index.d.ts#OSV_PURL_TYPES
 export declare const OSV_PURL_TYPES: Readonly<Record<string, string>>;
+
+### build/index.d.ts#OsvEvent
+interface OsvEvent {
+  readonly introduced?: string;
+  readonly fixed?: string;
+  readonly last_affected?: string;
+  readonly limit?: string;
+}
+
+### build/index.d.ts#OsvRange
+interface OsvRange {
+  readonly type: string;
+  readonly events: readonly OsvEvent[];
+}
 
 ### build/index.d.ts#Purl
 interface Purl {
@@ -30,8 +61,48 @@ interface Purl {
   readonly subpath?: string;
 }
 
+### build/index.d.ts#Vers
+interface Vers {
+  readonly scheme: string;
+  readonly all: boolean;
+  readonly constraints: readonly VersConstraint[];
+}
+
+### build/index.d.ts#VersComparator
+type VersComparator = "=" | "!=" | "<" | "<=" | ">" | ">=";
+
+### build/index.d.ts#VersConstraint
+interface VersConstraint {
+  readonly comparator: VersComparator;
+  readonly version: string;
+}
+
+### build/index.d.ts#VersionScheme
+type VersionScheme = "semver" | "golang" | "pypi" | "deb" | "rpm";
+
+### build/index.d.ts#compareDebian
+export declare function compareDebian(a: string, b: string): number | undefined;
+
+### build/index.d.ts#compareGo
+export declare function compareGo(a: string, b: string): number | undefined;
+
+### build/index.d.ts#comparePep440
+export declare function comparePep440(a: string, b: string): number | undefined;
+
+### build/index.d.ts#compareRpm
+export declare function compareRpm(a: string, b: string): number | undefined;
+
+### build/index.d.ts#compareSemver
+export declare function compareSemver(a: string, b: string): number | undefined;
+
+### build/index.d.ts#compareVersions
+export declare function compareVersions(scheme: string, a: string, b: string): number | undefined;
+
 ### build/index.d.ts#formatPurl
 export declare function formatPurl(purl: Purl): string | undefined;
+
+### build/index.d.ts#formatVers
+export declare function formatVers(vers: Vers): string;
 
 ### build/index.d.ts#normalizePurl
 export declare function normalizePurl(purl: Purl): Purl | undefined;
@@ -46,8 +117,20 @@ export declare function osvPackagePurl(pkg: {
 ### build/index.d.ts#osvPurl
 export declare function osvPurl(ecosystem: string, name: string): string | undefined;
 
+### build/index.d.ts#osvRangeVers
+export declare function osvRangeVers(ecosystem: string, range: OsvRange): Vers | undefined;
+
 ### build/index.d.ts#packagePurlOf
 export declare function packagePurlOf(text: string): string | undefined;
 
 ### build/index.d.ts#parsePurl
 export declare function parsePurl(text: string): Purl | undefined;
+
+### build/index.d.ts#parseVers
+export declare function parseVers(text: string): Vers | undefined;
+
+### build/index.d.ts#versContains
+export declare function versContains(vers: Vers, version: string): boolean | undefined;
+
+### build/index.d.ts#versionScheme
+export declare function versionScheme(type: string): VersionScheme | undefined;

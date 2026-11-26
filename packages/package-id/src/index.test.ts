@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatPurl, normalizePurl, OSV_PURL_TYPES, osvPackagePurl, osvPurl, packagePurlOf, parsePurl } from "./index.ts";
+import { formatPurl, formatVers, normalizePurl, OSV_PURL_TYPES, osvPackagePurl, osvPurl, osvRangeVers, packagePurlOf, parsePurl, versContains } from "./index.ts";
 
 /** This function gives the canonical text of a purl text: a parse, then a format. */
 const canonical = (text: string): string | undefined => {
@@ -112,5 +112,35 @@ describe("the purl of an OSV package", () => {
     expect(osvPackagePurl({ ecosystem: "npm", name: "a", purl: "pkg:npm/a@1.0.0?arch=x#sub" })).toBe("pkg:npm/a");
     expect(osvPackagePurl({ ecosystem: "npm", name: "b", purl: "bad" })).toBe("pkg:npm/b");
     expect(osvPackagePurl({ ecosystem: "npm", name: "c" })).toBe("pkg:npm/c");
+  });
+});
+
+describe("the vers range of an OSV range", () => {
+  it("sorts the events and gives one constraint for each", () => {
+    const vers = osvRangeVers("PyPI", { type: "ECOSYSTEM", events: [{ introduced: "2.0" }, { fixed: "2.3" }, { introduced: "1.0" }, { fixed: "1.2" }] });
+    expect(vers === undefined ? undefined : formatVers(vers)).toBe("vers:pypi/>=1.0|<1.2|>=2.0|<2.3");
+    expect(versContains(vers!, "1.1")).toBe(true);
+    expect(versContains(vers!, "1.5")).toBe(false);
+  });
+
+  it("gives no constraint for introduced 0, and <= for last_affected", () => {
+    const fixed = osvRangeVers("npm", { type: "SEMVER", events: [{ introduced: "0" }, { fixed: "3.16.3" }] });
+    expect(fixed === undefined ? undefined : formatVers(fixed)).toBe("vers:semver/<3.16.3");
+    const last = osvRangeVers("Go", { type: "SEMVER", events: [{ introduced: "0" }, { last_affected: "1.4.0" }] });
+    expect(last === undefined ? undefined : formatVers(last)).toBe("vers:semver/<=1.4.0");
+    expect(osvRangeVers("npm", { type: "SEMVER", events: [{ introduced: "0" }] })).toEqual({ scheme: "semver", all: true, constraints: [] });
+    expect(osvRangeVers("npm", { type: "SEMVER", events: [{ introduced: "0" }, { limit: "*" }] })?.all).toBe(true);
+  });
+
+  it("uses the purl type of the ecosystem for a range of the type ECOSYSTEM", () => {
+    expect(osvRangeVers("Debian:12", { type: "ECOSYSTEM", events: [{ introduced: "0" }, { fixed: "7.88.1-10+deb12u5" }] })?.scheme).toBe("deb");
+    expect(osvRangeVers("Maven", { type: "ECOSYSTEM", events: [{ introduced: "2.0" }, { fixed: "1.5" }] })?.constraints.map((c) => c.version)).toEqual(["2.0", "1.5"]);
+  });
+
+  it("gives undefined for a GIT range, an unknown ecosystem or an empty event", () => {
+    expect(osvRangeVers("npm", { type: "GIT", events: [{ introduced: "abc123" }] })).toBeUndefined();
+    expect(osvRangeVers("constructor", { type: "ECOSYSTEM", events: [{ fixed: "1.0" }] })).toBeUndefined();
+    expect(osvRangeVers("npm", { type: "SEMVER", events: [{}] })).toBeUndefined();
+    expect(osvPurl("constructor", "x")).toBeUndefined();
   });
 });
