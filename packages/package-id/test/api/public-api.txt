@@ -29,6 +29,7 @@ cpeVersionOf: build/index.d.ts#cpeVersionOf
 formatCpe: build/index.d.ts#formatCpe
 formatPurl: build/index.d.ts#formatPurl
 formatVers: build/index.d.ts#formatVers
+modelNumberMatches: build/index.d.ts#modelNumberMatches
 normalizePurl: build/index.d.ts#normalizePurl
 osvPackagePurl: build/index.d.ts#osvPackagePurl
 osvPurl: build/index.d.ts#osvPurl
@@ -145,6 +146,9 @@ export declare function formatPurl(purl: Purl): string | undefined;
 
 ### build/index.d.ts#formatVers
 export declare function formatVers(vers: Vers): string;
+
+### build/index.d.ts#modelNumberMatches
+export declare function modelNumberMatches(pattern: string, model: string): boolean;
 
 ### build/index.d.ts#normalizePurl
 export declare function normalizePurl(purl: Purl): Purl | undefined;

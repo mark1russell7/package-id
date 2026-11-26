@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "@mark1russell7/package-id",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Package URLs (purl), the purl of each OSV ecosystem, the version order of each ecosystem and version ranges (vers). Plain functions with no fetch.",
   "keywords": [
     "purl",
