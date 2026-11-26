@@ -120,8 +120,8 @@ export function versContains(vers: Vers, version: string): boolean | undefined {
 
 /**
  * This function gives the end of the part of a range that holds a version, when that end is a constraint `<`. For the
- * range of an advisory, it is the first fixed version above the version. The result is `undefined` when the version is
- * not in the range, when the order is not known, or when the part has no such end (`<=`, an open end or `=`).
+ * range of an advisory, it is the first fixed version above the version. The result is `undefined` for a version out
+ * of the range, or for an unknown order. It is also `undefined` for a part with no such end: `<=`, an open end or `=`.
  */
 export function versEnd(vers: Vers, version: string): string | undefined {
   if (vers.all || versContains(vers, version) !== true) return undefined;
