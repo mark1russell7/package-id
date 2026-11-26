@@ -6,6 +6,8 @@
 
 ## . (build/index.d.ts): names
 
+type Cpe: build/index.d.ts#Cpe
+type CpePart: build/index.d.ts#CpePart
 OSV_PURL_TYPES: build/index.d.ts#OSV_PURL_TYPES
 type OsvEvent: build/index.d.ts#OsvEvent
 type OsvRange: build/index.d.ts#OsvRange
@@ -22,6 +24,9 @@ comparePep440: build/index.d.ts#comparePep440
 compareRpm: build/index.d.ts#compareRpm
 compareSemver: build/index.d.ts#compareSemver
 compareVersions: build/index.d.ts#compareVersions
+cpeProductOf: build/index.d.ts#cpeProductOf
+cpeVersionOf: build/index.d.ts#cpeVersionOf
+formatCpe: build/index.d.ts#formatCpe
 formatPurl: build/index.d.ts#formatPurl
 formatVers: build/index.d.ts#formatVers
 normalizePurl: build/index.d.ts#normalizePurl
@@ -29,6 +34,7 @@ osvPackagePurl: build/index.d.ts#osvPackagePurl
 osvPurl: build/index.d.ts#osvPurl
 osvRangeVers: build/index.d.ts#osvRangeVers
 packagePurlOf: build/index.d.ts#packagePurlOf
+parseCpe: build/index.d.ts#parseCpe
 parsePurl: build/index.d.ts#parsePurl
 parseVers: build/index.d.ts#parseVers
 versContains: build/index.d.ts#versContains
@@ -36,6 +42,24 @@ versEnd: build/index.d.ts#versEnd
 versionScheme: build/index.d.ts#versionScheme
 
 ## Declarations
+
+### build/index.d.ts#Cpe
+interface Cpe {
+  readonly part: CpePart;
+  readonly vendor: string;
+  readonly product: string;
+  readonly version: string;
+  readonly update: string;
+  readonly edition: string;
+  readonly language: string;
+  readonly swEdition: string;
+  readonly targetSw: string;
+  readonly targetHw: string;
+  readonly other: string;
+}
+
+### build/index.d.ts#CpePart
+type CpePart = "a" | "o" | "h" | "*";
 
 ### build/index.d.ts#OSV_PURL_TYPES
 export declare const OSV_PURL_TYPES: Readonly<Record<string, string>>;
@@ -107,6 +131,15 @@ export declare function compareSemver(a: string, b: string): number | undefined;
 ### build/index.d.ts#compareVersions
 export declare function compareVersions(scheme: string, a: string, b: string): number | undefined;
 
+### build/index.d.ts#cpeProductOf
+export declare function cpeProductOf(text: string): string | undefined;
+
+### build/index.d.ts#cpeVersionOf
+export declare function cpeVersionOf(cpe: Cpe): string | undefined;
+
+### build/index.d.ts#formatCpe
+export declare function formatCpe(cpe: Cpe): string;
+
 ### build/index.d.ts#formatPurl
 export declare function formatPurl(purl: Purl): string | undefined;
 
@@ -131,6 +164,9 @@ export declare function osvRangeVers(ecosystem: string, range: OsvRange): Vers |
 
 ### build/index.d.ts#packagePurlOf
 export declare function packagePurlOf(text: string): string | undefined;
+
+### build/index.d.ts#parseCpe
+export declare function parseCpe(text: string): Cpe | undefined;
 
 ### build/index.d.ts#parsePurl
 export declare function parsePurl(text: string): Purl | undefined;

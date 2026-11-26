@@ -10,3 +10,4 @@ This file is the plan of package-id. The Status page of the site reads it, and t
 | R4 | The version order of each ecosystem | in progress | 0.0.2 compares SemVer, Go, PEP 440, Debian and RPM versions. 0.1.0 adds the `vers` schemes `intdot` and `generic`, for the CSAF advisories of vendors. The order of Maven is the next part. |
 | R5 | The names of each registry | open | Map the ecosystem names of OSV, purl and each registry to each other. |
 | R6 | A demo site | open | Replace the first site with a demo that parses a purl and shows its parts. |
+| R7 | CPE names | in progress | `parseCpe`, `formatCpe`, `cpeProductOf` and `cpeVersionOf` read and write the CPE names of NIST: the formatted string of CPE 2.3 and the URI of CPE 2.2. The CSAF advisories of vendors give a CPE when a product has no purl. |

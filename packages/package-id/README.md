@@ -43,6 +43,10 @@ versContains(parseVers("vers:npm/>=1.0.0|<1.2.3")!, "1.1.0");
 | `formatVers(vers)` | The `vers` text of a range, with the constraints in the order of their versions. |
 | `versContains(vers, version)` | True when the version is in the range. The result is `undefined` when the order is not known. |
 | `versEnd(vers, version)` | The end `<` of the part of the range that holds the version: for an advisory, the fixed version. |
+| `parseCpe(text)` | The attributes of a CPE name: a formatted string of CPE 2.3 or a URI of CPE 2.2. The result is `undefined` for a text that is not a CPE name. |
+| `formatCpe(cpe)` | The formatted string of CPE 2.3, in lower case, with a backslash before each special character only. |
+| `cpeProductOf(text)` | The part, the vendor and the product of a CPE name, with `*` for each other attribute. |
+| `cpeVersionOf(cpe)` | The version of a CPE name with no backslashes, or `undefined` for any version, no version or a wildcard. |
 
 ## The canonical form
 

@@ -1,8 +1,9 @@
 /**
- * Package identities: package URLs (purl), the purl of each OSV ecosystem, the version order of each ecosystem and version ranges (vers). The functions are plain functions with
+ * Package identities: package URLs (purl), the purl of each OSV ecosystem, the version order of each ecosystem, version ranges (vers) and CPE names. The functions are plain functions with
  * no fetch.
  */
 
+export { cpeProductOf, cpeVersionOf, formatCpe, parseCpe, type Cpe, type CpePart } from "./cpe.ts";
 export { formatPurl, normalizePurl, packagePurlOf, parsePurl, type Purl } from "./purl.ts";
 export { OSV_PURL_TYPES, osvPackagePurl, osvPurl, osvRangeVers, type OsvEvent, type OsvRange } from "./osv.ts";
 export {
