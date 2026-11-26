@@ -47,6 +47,7 @@ versContains(parseVers("vers:npm/>=1.0.0|<1.2.3")!, "1.1.0");
 | `formatCpe(cpe)` | The formatted string of CPE 2.3, in lower case, with a backslash before each special character only. |
 | `cpeProductOf(text)` | The part, the vendor and the product of a CPE name, with `*` for each other attribute. |
 | `cpeVersionOf(cpe)` | The version of a CPE name with no backslashes, or `undefined` for any version, no version or a wildcard. |
+| `modelNumberMatches(pattern, model)` | `true` when a model number or a SKU matches a CSAF pattern: `*` for any run, `?` for one character. |
 
 ## The canonical form
 
