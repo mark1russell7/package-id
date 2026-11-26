@@ -34,6 +34,7 @@ normalizePurl: build/index.d.ts#normalizePurl
 osvPackagePurl: build/index.d.ts#osvPackagePurl
 osvPurl: build/index.d.ts#osvPurl
 osvRangeVers: build/index.d.ts#osvRangeVers
+packageKeyOf: build/index.d.ts#packageKeyOf
 packagePurlOf: build/index.d.ts#packagePurlOf
 parseCpe: build/index.d.ts#parseCpe
 parsePurl: build/index.d.ts#parsePurl
@@ -165,6 +166,9 @@ export declare function osvPurl(ecosystem: string, name: string): string | undef
 
 ### build/index.d.ts#osvRangeVers
 export declare function osvRangeVers(ecosystem: string, range: OsvRange): Vers | undefined;
+
+### build/index.d.ts#packageKeyOf
+export declare function packageKeyOf(text: string): string | undefined;
 
 ### build/index.d.ts#packagePurlOf
 export declare function packagePurlOf(text: string): string | undefined;

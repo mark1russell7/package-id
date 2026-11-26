@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatPurl, formatVers, normalizePurl, OSV_PURL_TYPES, osvPackagePurl, osvPurl, osvRangeVers, packagePurlOf, parsePurl, versContains } from "./index.ts";
+import { formatPurl, formatVers, normalizePurl, OSV_PURL_TYPES, osvPackagePurl, osvPurl, osvRangeVers, packageKeyOf, packagePurlOf, parsePurl, versContains } from "./index.ts";
 
 /** This function gives the canonical text of a purl text: a parse, then a format. */
 const canonical = (text: string): string | undefined => {
@@ -84,6 +84,27 @@ describe("the purl of a package with no version", () => {
     expect(packagePurlOf("pkg:npm/a@1.0.0?arch=x#sub")).toBe("pkg:npm/a");
     expect(packagePurlOf("pkg:npm/%40scope/A@2")).toBe("pkg:npm/%40scope/a");
     expect(packagePurlOf("not a purl")).toBeUndefined();
+  });
+});
+
+describe("the match key of a package", () => {
+  it("gives one key to the names that PEP 503 makes equal", () => {
+    const key = packageKeyOf("pkg:pypi/mcp.diag-tool@1.0");
+    expect(key).toBe("pkg:pypi/mcp-diag-tool");
+    expect(packageKeyOf("pkg:pypi/mcp-diag.tool")).toBe(key);
+    expect(packageKeyOf("pkg:pypi/MCP__Diag...Tool")).toBe(key);
+    expect(packageKeyOf("pkg:pypi/mcp-diag-tools")).not.toBe(key);
+  });
+
+  it("folds the case and the underscores of a crate, and the case of a NuGet id", () => {
+    expect(packageKeyOf("pkg:cargo/Serde_JSON@1.0.0")).toBe("pkg:cargo/serde-json");
+    expect(packageKeyOf("pkg:nuget/Newtonsoft.Json@13.0.1")).toBe("pkg:nuget/newtonsoft.json");
+  });
+
+  it("keeps the name of a type with no fold rule", () => {
+    expect(packageKeyOf("pkg:maven/org.Example/Lib_A@1")).toBe("pkg:maven/org.Example/Lib_A");
+    expect(packageKeyOf("pkg:gem/Rails@7")).toBe("pkg:gem/Rails");
+    expect(packageKeyOf("not a purl")).toBeUndefined();
   });
 });
 
