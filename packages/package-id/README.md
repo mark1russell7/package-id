@@ -41,6 +41,7 @@ versContains(parseVers("vers:npm/>=1.0.0|<1.2.3")!, "1.1.0");
 | `parseVers(text)` | The scheme and the constraints of a `vers` range, or `undefined` for a text that is not a range. |
 | `formatVers(vers)` | The `vers` text of a range, with the constraints in the order of their versions. |
 | `versContains(vers, version)` | True when the version is in the range. The result is `undefined` when the order is not known. |
+| `versEnd(vers, version)` | The end `<` of the part of the range that holds the version: for an advisory, the fixed version. |
 
 ## The canonical form
 

@@ -15,4 +15,4 @@ export {
   versionScheme,
   type VersionScheme,
 } from "./version.ts";
-export { formatVers, parseVers, versContains, type Vers, type VersComparator, type VersConstraint } from "./vers.ts";
+export { formatVers, parseVers, versContains, versEnd, type Vers, type VersComparator, type VersConstraint } from "./vers.ts";

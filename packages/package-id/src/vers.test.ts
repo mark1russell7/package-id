@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatVers, parseVers, versContains, type Vers } from "./vers.ts";
+import { formatVers, parseVers, versContains, versEnd, type Vers } from "./vers.ts";
 
 const range = (text: string): Vers => {
   const vers = parseVers(text);
@@ -88,5 +88,24 @@ describe("a version in a range", () => {
     expect(versContains(range("vers:maven/<1.0"), "0.9")).toBeUndefined();
     expect(versContains(range("vers:npm/<1.0.0"), "latest")).toBeUndefined();
     expect(versContains(range("vers:npm/<one"), "0.9.0")).toBeUndefined();
+  });
+});
+
+describe("the end of the part of a range that holds a version", () => {
+  it("gives the next constraint < above the version", () => {
+    const vers = range("vers:deb/>=1.0|<1.2|>=2.0|<2.3");
+    expect(versEnd(vers, "1.0")).toBe("1.2");
+    expect(versEnd(vers, "2.1")).toBe("2.3");
+    expect(versEnd(range("vers:npm/<3.16.3"), "3.0.0")).toBe("3.16.3");
+  });
+
+  it("gives undefined out of the range, for <=, for an open end and for =", () => {
+    const vers = range("vers:deb/>=1.0|<1.2|>=2.0|<2.3");
+    expect(versEnd(vers, "1.5")).toBeUndefined();
+    expect(versEnd(range("vers:npm/<=1.4.0"), "1.0.0")).toBeUndefined();
+    expect(versEnd(range("vers:npm/>=2.0.0"), "3.0.0")).toBeUndefined();
+    expect(versEnd(range("vers:npm/1.0.0|2.0.0"), "1.0.0")).toBeUndefined();
+    expect(versEnd(range("vers:npm/*"), "1.0.0")).toBeUndefined();
+    expect(versEnd(range("vers:maven/<2.0"), "1.0")).toBeUndefined();
   });
 });

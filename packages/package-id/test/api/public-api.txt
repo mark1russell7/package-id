@@ -30,6 +30,7 @@ packagePurlOf: build/index.d.ts#packagePurlOf
 parsePurl: build/index.d.ts#parsePurl
 parseVers: build/index.d.ts#parseVers
 versContains: build/index.d.ts#versContains
+versEnd: build/index.d.ts#versEnd
 versionScheme: build/index.d.ts#versionScheme
 
 ## Declarations
@@ -131,6 +132,9 @@ export declare function parseVers(text: string): Vers | undefined;
 
 ### build/index.d.ts#versContains
 export declare function versContains(vers: Vers, version: string): boolean | undefined;
+
+### build/index.d.ts#versEnd
+export declare function versEnd(vers: Vers, version: string): string | undefined;
 
 ### build/index.d.ts#versionScheme
 export declare function versionScheme(type: string): VersionScheme | undefined;

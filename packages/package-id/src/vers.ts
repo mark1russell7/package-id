@@ -117,3 +117,19 @@ export function versContains(vers: Vers, version: string): boolean | undefined {
   }
   return false;
 }
+
+/**
+ * This function gives the end of the part of a range that holds a version, when that end is a constraint `<`. For the
+ * range of an advisory, it is the first fixed version above the version. The result is `undefined` when the version is
+ * not in the range, when the order is not known, or when the part has no such end (`<=`, an open end or `=`).
+ */
+export function versEnd(vers: Vers, version: string): string | undefined {
+  if (vers.all || versContains(vers, version) !== true) return undefined;
+  if (vers.constraints.some((c) => c.comparator === "=" && compareVersions(vers.scheme, version, c.version) === 0)) return undefined;
+  const ranged = sortConstraints(
+    vers.scheme,
+    vers.constraints.filter((c) => c.comparator !== "=" && c.comparator !== "!="),
+  );
+  const next = ranged?.find((c) => compareVersions(vers.scheme, version, c.version)! < 0);
+  return next?.comparator === "<" ? next.version : undefined;
+}
