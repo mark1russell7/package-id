@@ -1,10 +1,11 @@
 /**
- * The version order of each ecosystem: SemVer, Go modules, PEP 440, Debian and RPM. Each function compares two
- * versions of one scheme. A text that is not a version of the scheme gives `undefined`, not a guess.
+ * The version order of each ecosystem: SemVer, Go modules, PEP 440, Debian and RPM. The `vers` schemes `intdot` and
+ * `generic` have an order too. Each function compares two versions of one scheme. A text that is not a version of the
+ * scheme gives `undefined`, not a guess.
  */
 
 /** The version schemes that this module compares. */
-export type VersionScheme = "semver" | "golang" | "pypi" | "deb" | "rpm";
+export type VersionScheme = "semver" | "golang" | "pypi" | "deb" | "rpm" | "intdot" | "generic";
 
 /** The version scheme of each purl type whose order this module knows. */
 const TYPE_SCHEMES: ReadonlyMap<string, VersionScheme> = new Map([
@@ -15,6 +16,7 @@ const TYPE_SCHEMES: ReadonlyMap<string, VersionScheme> = new Map([
   ["pypi", "pypi"],
   ["deb", "deb"],
   ["rpm", "rpm"],
+  ["generic", "generic"],
 ]);
 
 /** This function gives the version scheme of a purl type, or `undefined` for a type whose order this module does not know. */
@@ -40,6 +42,10 @@ export function compareVersions(scheme: string, a: string, b: string): number | 
       return compareDebian(a, b);
     case "rpm":
       return compareRpm(a, b);
+    case "intdot":
+      return compareIntdot(a, b);
+    case "generic":
+      return compareGeneric(a, b);
     default:
       return undefined;
   }
@@ -280,4 +286,68 @@ export function compareRpm(a: string, b: string): number | undefined {
   if (version !== 0) return version;
   // A version with no release comes before each release of that version. Thus a check of a fix does not take it as fixed.
   return rpmvercmp(x[3] ?? "", y[3] ?? "");
+}
+
+const INTDOT = /^\d+(?:\.\d+)*$/;
+
+/**
+ * This function compares two versions of the `vers` scheme `intdot`: integers with a `.` between them. The integers
+ * compare from left to right. A missing integer is 0, so `1.0` equals `1.0.0`.
+ */
+export function compareIntdot(a: string, b: string): number | undefined {
+  const x = a.trim();
+  const y = b.trim();
+  if (!INTDOT.test(x) || !INTDOT.test(y)) return undefined;
+  const p = x.split(".");
+  const q = y.split(".");
+  for (let i = 0; i < Math.max(p.length, q.length); i++) {
+    const c = compareDigits(p[i] ?? "0", q[i] ?? "0");
+    if (c !== 0) return c;
+  }
+  return 0;
+}
+
+/** This function gives the segments of a version of a vendor: the runs of digits and the runs of letters. */
+function genericSegments(text: string): readonly string[] | undefined {
+  // One `v` before a digit is a prefix, not a segment: `V6.80` is the version `6.80`.
+  const body = text.trim().replace(/^[vV](?=\d)/, "");
+  if (!/^\d/.test(body)) return undefined;
+  return body.match(/\d+|[A-Za-z]+/g) ?? undefined;
+}
+
+const isDigits = (segment: string): boolean => /^\d/.test(segment);
+
+/**
+ * This function compares two versions of the `vers` scheme `generic`, the versions of vendors, for example `V6.80` or
+ * `2.9.1.0_FR`. A version starts with a digit, after one optional `v`. The segments are the runs of digits and of letters.
+ * The other characters separate the segments.
+ *
+ * The segments compare from left to right, and the first difference decides. Two runs of digits compare as integers.
+ * Two runs of letters are equal when they are the same with no regard to case. Other pairs have no known order. These
+ * pairs give `undefined`: two different runs of letters, or a run of digits and a run of letters.
+ *
+ * When one version ends first, a rest of zeros is equal to the end. A rest with a number above 0 before its first letters
+ * comes after the end. A rest with letters before such a number, for example ` SP1` or `-beta`, has no known order.
+ */
+export function compareGeneric(a: string, b: string): number | undefined {
+  const p = genericSegments(a);
+  const q = genericSegments(b);
+  if (p === undefined || q === undefined) return undefined;
+  for (let i = 0; i < Math.min(p.length, q.length); i++) {
+    const x = p[i]!;
+    const y = q[i]!;
+    if (isDigits(x) && isDigits(y)) {
+      const c = compareDigits(x, y);
+      if (c !== 0) return c;
+    } else if (isDigits(x) || isDigits(y) || x.toLowerCase() !== y.toLowerCase()) {
+      return undefined;
+    }
+  }
+  const rest = p.length > q.length ? p.slice(q.length) : q.slice(p.length);
+  const longer = p.length > q.length ? 1 : -1;
+  for (const segment of rest) {
+    if (!isDigits(segment)) return undefined;
+    if (/[1-9]/.test(segment)) return longer;
+  }
+  return 0;
 }

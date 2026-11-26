@@ -7,7 +7,9 @@ export { formatPurl, normalizePurl, packagePurlOf, parsePurl, type Purl } from "
 export { OSV_PURL_TYPES, osvPackagePurl, osvPurl, osvRangeVers, type OsvEvent, type OsvRange } from "./osv.ts";
 export {
   compareDebian,
+  compareGeneric,
   compareGo,
+  compareIntdot,
   comparePep440,
   compareRpm,
   compareSemver,
