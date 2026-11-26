@@ -185,3 +185,28 @@ export function packagePurlOf(text: string): string | undefined {
   const purl = parsePurl(text);
   return purl === undefined ? undefined : formatPurl({ type: purl.type, ...(purl.namespace === undefined ? {} : { namespace: purl.namespace }), name: purl.name });
 }
+
+/**
+ * The name rules of the registries that give one package to two different names. Each rule gives the name that the
+ * registry compares.
+ * - PyPI: the normalized name of PEP 503. Each run of `-`, `_` and `.` is one `-`, in lower case.
+ * - Cargo: crates.io refuses a name that differs from a crate only in case or in `-` and `_`.
+ * - NuGet: the id of a package is not case sensitive.
+ */
+const MATCH_NAME: Readonly<Record<string, (name: string) => string>> = {
+  pypi: (name) => name.replace(/[-_.]+/g, "-").toLowerCase(),
+  cargo: (name) => name.replace(/_/g, "-").toLowerCase(),
+  nuget: (name) => name.toLowerCase(),
+};
+
+/**
+ * This function gives the match key of a package: the purl of {@link packagePurlOf}, with the name that its registry
+ * compares. Two purls with one key name one package, for example `pkg:pypi/zope.interface` and `pkg:pypi/Zope_Interface`.
+ * The key is a valid purl text. It gives `undefined` when the text is not a valid purl.
+ */
+export function packageKeyOf(text: string): string | undefined {
+  const purl = parsePurl(text);
+  if (purl === undefined) return undefined;
+  const fold = MATCH_NAME[purl.type];
+  return formatPurl({ type: purl.type, ...(purl.namespace === undefined ? {} : { namespace: purl.namespace }), name: fold === undefined ? purl.name : fold(purl.name) });
+}

@@ -32,6 +32,7 @@ versContains(parseVers("vers:npm/>=1.0.0|<1.2.3")!, "1.1.0");
 | `formatPurl(purl)` | The canonical text of a purl, or `undefined` when a part breaks a rule. |
 | `normalizePurl(purl)` | The canonical parts: the case rules of the type, sorted qualifiers and no empty part. |
 | `packagePurlOf(text)` | The canonical purl with no version, no qualifiers and no subpath. |
+| `packageKeyOf(text)` | The match key of a package: the purl of `packagePurlOf`, with the name that its registry compares (PEP 503 for PyPI). |
 | `osvPurl(ecosystem, name)` | The purl of a package of an OSV ecosystem, with no version. |
 | `osvPackagePurl(pkg)` | The purl of an OSV record package. A valid purl of the record wins. |
 | `OSV_PURL_TYPES` | The purl type of each OSV ecosystem that has one. |

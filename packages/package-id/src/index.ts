@@ -5,7 +5,7 @@
 
 export { cpeProductOf, cpeVersionOf, formatCpe, parseCpe, type Cpe, type CpePart } from "./cpe.ts";
 export { modelNumberMatches } from "./model.ts";
-export { formatPurl, normalizePurl, packagePurlOf, parsePurl, type Purl } from "./purl.ts";
+export { formatPurl, normalizePurl, packageKeyOf, packagePurlOf, parsePurl, type Purl } from "./purl.ts";
 export { OSV_PURL_TYPES, osvPackagePurl, osvPurl, osvRangeVers, type OsvEvent, type OsvRange } from "./osv.ts";
 export {
   compareDebian,
