@@ -1,0 +1,53 @@
+# The public API of @mark1russell7/package-id
+#
+# The names of each entry of the exports field, and the declaration of each name, without comments
+# and private members. The command `api-report check` compares this file with the built .d.ts files.
+# To accept a change of the API, start the build, then `api-report update`, and review the diff.
+
+## . (build/index.d.ts): names
+
+OSV_PURL_TYPES: build/index.d.ts#OSV_PURL_TYPES
+type Purl: build/index.d.ts#Purl
+formatPurl: build/index.d.ts#formatPurl
+normalizePurl: build/index.d.ts#normalizePurl
+osvPackagePurl: build/index.d.ts#osvPackagePurl
+osvPurl: build/index.d.ts#osvPurl
+packagePurlOf: build/index.d.ts#packagePurlOf
+parsePurl: build/index.d.ts#parsePurl
+
+## Declarations
+
+### build/index.d.ts#OSV_PURL_TYPES
+export declare const OSV_PURL_TYPES: Readonly<Record<string, string>>;
+
+### build/index.d.ts#Purl
+interface Purl {
+  readonly type: string;
+  readonly namespace?: string;
+  readonly name: string;
+  readonly version?: string;
+  readonly qualifiers?: Readonly<Record<string, string>>;
+  readonly subpath?: string;
+}
+
+### build/index.d.ts#formatPurl
+export declare function formatPurl(purl: Purl): string | undefined;
+
+### build/index.d.ts#normalizePurl
+export declare function normalizePurl(purl: Purl): Purl | undefined;
+
+### build/index.d.ts#osvPackagePurl
+export declare function osvPackagePurl(pkg: {
+  readonly ecosystem: string;
+  readonly name: string;
+  readonly purl?: string;
+}): string | undefined;
+
+### build/index.d.ts#osvPurl
+export declare function osvPurl(ecosystem: string, name: string): string | undefined;
+
+### build/index.d.ts#packagePurlOf
+export declare function packagePurlOf(text: string): string | undefined;
+
+### build/index.d.ts#parsePurl
+export declare function parsePurl(text: string): Purl | undefined;
