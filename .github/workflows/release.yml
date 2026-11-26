@@ -74,7 +74,7 @@ jobs:
   # changed after that run gives a no, and the gates start.
   tree:
     name: Tree
-    uses: mark1russell7/template/.github/workflows/reusable-release-tree.yml@19a14ae7da54e6e529ef90c5c4ab872867f152b9 # main
+    uses: mark1russell7/template/.github/workflows/reusable-release-tree.yml@8ad943ea22c2a65479b648664765028cf981da78 # main
     permissions:
       actions: read
       contents: read
@@ -99,7 +99,7 @@ jobs:
     if: >-
       ${{ !cancelled() && (needs.verify.result == 'success'
       || (needs.verify.result == 'skipped' && needs.tree.result == 'success' && needs.tree.outputs.verified == 'true')) }}
-    uses: mark1russell7/template/.github/workflows/reusable-release-build.yml@19a14ae7da54e6e529ef90c5c4ab872867f152b9 # main
+    uses: mark1russell7/template/.github/workflows/reusable-release-build.yml@8ad943ea22c2a65479b648664765028cf981da78 # main
     permissions:
       contents: read
 
@@ -109,7 +109,7 @@ jobs:
     name: Version pull request
     needs: build
     if: ${{ !cancelled() && needs.build.result == 'success' && needs.build.outputs.mode == 'version' }}
-    uses: mark1russell7/template/.github/workflows/reusable-release-version.yml@19a14ae7da54e6e529ef90c5c4ab872867f152b9 # main
+    uses: mark1russell7/template/.github/workflows/reusable-release-version.yml@8ad943ea22c2a65479b648664765028cf981da78 # main
     permissions:
       # The branch changeset-release/main and the pull request
       contents: write
@@ -144,14 +144,14 @@ jobs:
       # the pin. Renovate does not move it: the release session moves it at a quiet time, because a
       # workflow change between a version merge and its tag job makes GitHub refuse the tag (HTTP 403).
       - id: publish
-        uses: mark1russell7/template/.github/actions/npm-publish@19a14ae7da54e6e529ef90c5c4ab872867f152b9 # main
+        uses: mark1russell7/template/.github/actions/npm-publish@8ad943ea22c2a65479b648664765028cf981da78 # main
 
   tag:
     name: Git tag and GitHub release
     needs: [build, publish]
     # Also after a failed publish: each version that it published before the failure gets its tag.
     if: ${{ !cancelled() && needs.build.result == 'success' && needs.build.outputs.mode != 'version' }}
-    uses: mark1russell7/template/.github/workflows/reusable-release-tag.yml@19a14ae7da54e6e529ef90c5c4ab872867f152b9 # main
+    uses: mark1russell7/template/.github/workflows/reusable-release-tag.yml@8ad943ea22c2a65479b648664765028cf981da78 # main
     permissions:
       contents: write
     with:
